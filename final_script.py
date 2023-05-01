@@ -105,8 +105,8 @@ def email_correct(example, email):
 # Email sending
 choice = str(input("Script was finished, do you want to see your report on the specific email or python CLI?\nemail or cli:"))
 if choice.lower() == "email":
-    email_sender = "hawk.solver@gmail.com"
-    email_pass = "aypxbzgtgbmzscjz"
+    email_sender = "your email"
+    email_pass = "password created by google permission for specific application"
     email_receiver = str(input("Please enter your email address correctly:"))
     email_receiver = email_correct(pattern, email_receiver)
     subject = "Report about your system"
