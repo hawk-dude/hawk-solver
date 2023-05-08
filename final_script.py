@@ -1,5 +1,5 @@
 import json
-import os
+#import os
 import platform
 import re as r
 import socket
@@ -12,30 +12,50 @@ import smtplib
 from email.message import EmailMessage
 import re
 
-#Writing output in file
+#Configuring output in file
 print("Script is running")
 original = sys.stdout
 path = 'report.txt'
 sys.stdout = open(path, 'w')
 
-# Time
+# Variables
 now = datetime.now()
 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-
-# Variables
 protocols_dict = {
-    "20": "You are using FTP protocol which is not secure."
-          " You should use SFTP.",
-    "23": "You are using Telnet protocol which is not secure."
-          " You should use SSH",
-    "69": "You are using FTP protocol which is not secure."
-          " You should use SFTP",
-    "80": "You are using HTTP which is allowed others"
-          " to deliver DDoS Attack or just visit your webserver without authentication ",
-    "161": "You are using SNMP which is allowed others to try login and control your system",
-    "443": "You are using HTTP which is allowed others"
-           " to deliver DDoS Attack or just visit your webserver without authentication "
+    "20": "You are using FTP protocol which is not secure.\n" + " "*32 +
+          "You should use SFTP.",
+    "22": "Be sure that you aren't using easy password\n" + " "*32 +
+          "and default user for login via ssh",
+    "23": "You are using Telnet protocol which is not secure.\n" + " "*32 +
+          "You should use SSH",
+    "25": "Without proper configuration and protection,\n" + " "*32 +
+          "this TCP port is vulnerable to spoofing and spamming.",
+    "53": "Protocol is particularly vulnerable to DDoS attacks",
+    "69": "You are using FTP protocol which is not secure.\n" + " "*32 +
+          "You should use SFTP",
+    "80": "You are using HTTP which is allowed others\n" + " "*32 +
+          "to deliver DDoS Attack or just visit\n" + " "*32 +
+          "your webserver without authentication",
+    "110": "This protocol sends all data as a plain text\n" + " "*32 +
+           "Your password and login can being seen",
+    "137": "Protocol is vulnerable to exploits",
+    "143": "that it transmits logins from the client\n" + " "*32 +
+           "to the server in plain text by default,\n" + " "*32 +
+           "meaning usernames and passwords are not encrypted",
+    "161": "You are using SNMP, SNMPv1 and SNMPv2 don't support,\n" + " "*32 +
+           "encryption. Check If your version is 3",
+    "443": "You are using HTTP which is allowed others\n" + " "*32 +
+           " to deliver DDoS Attack or just visit\n" + " "*32 +
+           " your webserver without authentication",
+    "1433": "Quite often, attackers probe these ports\n" + " "*32 +
+           "to find unprotected database with exploitable default configurations",
+    "3389": "Be sure that you aren't using easy password\n" + " "*32 +
+          "and default user for login via RDP",
 }
+protocols_dict["8080"] = protocols_dict["80"]
+protocols_dict["139"] = protocols_dict["137"]
+protocols_dict["8443"] = protocols_dict["443"]
+protocols_dict["1434"], protocols_dict["3306"] = protocols_dict["1433"], protocols_dict["1433"]
 def getIP(): # global ip
     d = str(urlopen('http://checkip.dyndns.com/').read())
     return r.compile(r'Address: (\d+\.\d+\.\d+\.\d+)').search(d).group(1)
@@ -51,20 +71,20 @@ elif "Linux" in os_version:
     operation = 1
 """
 
-# Writing in the console
+# Main Info
 print("_" * 20, "Script was started ", str(now)[11:19], "_" * 20, sep="")
-print("Hostname:\t", hostname)
-print("Local IP:\t", local_ip)
-print("Global IP:\t", global_ip)
-print("OS:\t\t", os_version)
+print("Hostname:".ljust(15), hostname)
+print("Local IP:".ljust(15), local_ip)
+print("Global IP:".ljust(15), global_ip)
+print("OS:".ljust(15), os_version)
 
-# Nmap3
+# Nmap3 requests
 nmap = nmap3.Nmap()
 os_results = nmap.nmap_os_detection(local_ip)
-top_ports_results = nmap.scan_top_ports(local_ip, args="-sV")
+top_ports_results = nmap.scan_top_ports(local_ip, default=500, args="-sV")
 list_results = nmap.nmap_list_scan(local_ip)
 
-# Writing in the json format general data
+# Recording data in other files
 with open("results_nmap3.log", "w") as write_file:
     json.dump(top_ports_results, write_file, indent=4, sort_keys=True)
 with open("results_nmap3.log", "r") as read_file:
@@ -73,18 +93,18 @@ with open('open_ports.log', 'w', ) as output:
     print("date and time =", dt_string, file=output)
 
 # Data processing and finding open ports. Feedback to user
-print("\nService\t\t", "Port\t", "Status\t", "Info")
+print("\nService".ljust(15), "Port".ljust(6), "Status".ljust(9), "Info")
 for protocol in data[local_ip]['ports']:
-    if protocol['state'] == 'open':
-        print(protocol['service']['name'], "\t", protocol['portid'], "\t", protocol['state'], end="\t")
+    if protocol['state'] == 'open' or protocol['state'] == 'filtered':
+        print(protocol['service']['name'].ljust(14), protocol['portid'].ljust(6), protocol['state'].ljust(7), end="\t")
         if protocol['portid'] in protocols_dict.keys():
             print(protocols_dict[protocol['portid']])
         else:
-            print(protocol['portid'], "is opened, but not critical protocol")
+            print("not critical")
         with open("open_ports.log", "a") as file:
             json.dump(protocol, file, indent=4, sort_keys=True)
 
-# Conclusions
+# Ending of main info
 print("_" * 20, "Script was finished ", str(datetime.now())[11:19], "_" * 20, sep="")
 sys.stdout.close()
 sys.stdout = original
@@ -105,15 +125,15 @@ def email_correct(example, email):
 # Email sending
 choice = str(input("Script was finished, do you want to see your report on the specific email or python CLI?\nemail or cli:"))
 if choice.lower() == "email":
-    email_sender = "your email"
-    email_pass = "password created by google permission for specific application"
+    email_sender = "youremail" # needs to be configured as written in instruction
+    email_pass = "google_uniq_pass_for_application"
     email_receiver = str(input("Please enter your email address correctly:"))
     email_receiver = email_correct(pattern, email_receiver)
     subject = "Report about your system"
     body = """
     Hello dear customer,
 
-    It is report that was sent automatically. It includes all open issues on your system with some advices.
+    It is report that was sent as you wished. It includes all open issues on your system with some advices.
     Don't reply.
 
     Thank you for using our product.
