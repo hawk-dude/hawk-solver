@@ -1,10 +1,16 @@
 # hawk-solver
-This applicatoin was created to look for the simplest cybersecurity issues using nmap request + optional output on cli or email.
+This applicatoin was created to look for the simplest cybersecurity issues using nmap request + optional output on console line or email.
 
 #Requirments
 -python3+
--nmap
+-Nmap
 -OS Windows whith PowerShell
--Access to in the Internet
 -Firewall that doesn't block API request to http://checkip.dyndns.com/
--valid email with preconfigured password that permits python using gmail servecies
+-valid email with preconfigured password that permits python using google services tutorial - https://youtu.be/g_j6ILT-X0k
+
+#Instruction
+1. Install Python3+ https://www.python.org/
+2. Install Nmap https://nmap.org/download#windows
+3. Download zip file from GitHub and put it in any directory wherever you want, because script creats files with additional information
+4. Run preinstal.sh1 file as Administrator
+5. Enjoy result 
