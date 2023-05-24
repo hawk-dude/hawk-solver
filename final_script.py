@@ -1,5 +1,4 @@
 import json
-#import os
 import platform
 import re as r
 import socket
@@ -65,11 +64,6 @@ local_ip = socket.gethostbyname(hostname)
 global_ip = getIP()
 
 os_version = platform.platform()
-"""if "Windows" in os_version:
-    operation = 0
-elif "Linux" in os_version:
-    operation = 1
-"""
 
 # Main Info
 print("_" * 20, "Script was started ", str(now)[11:19], "_" * 20, sep="")
