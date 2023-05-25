@@ -3,4 +3,4 @@ pip install mime
 pip install python3-nmap
 pip install setuptools
 pip install simplejson
-Start-Process -FilePath “final_script.exe”
+Start-Process -FilePath “final_script.exe” -verb runas
