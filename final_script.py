@@ -156,5 +156,6 @@ else:
     print("Command isn't correct")
 
 #Exit
+print("Additional information you can find in the current directory")
 input("Enter any key to quit")
 sys.exit()
