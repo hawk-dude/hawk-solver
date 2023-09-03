@@ -27,3 +27,4 @@ Optional. change preinstall.sh1 to run your python file or compile it.
 #Notes
 You may configure your own settings using the python file code. To run correctly change than preinstall file via PowerShell ISE
 IF you want to hide your code from others user you can convert python file to exe by next guide https://youtu.be/jnUpSK3D3is
+Presentation of project - https://docs.google.com/presentation/d/1JuBnJHDwJQ3RYX3Unq8FGH56OxFRtGF8/edit?usp=sharing&ouid=111992317510568301038&rtpof=true&sd=true
